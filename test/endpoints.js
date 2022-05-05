@@ -26,6 +26,9 @@ var servertest = require('servertest')
 
 var server = require('../lib/server')
 
+// * We can make some utility functions that adds/removes data from cache on demand (that'd be better)
+// * all these test cases can be improved drastically
+
 test.serial.cb('healthcheck', function (t) {
   var url = '/health'
   servertest(server(), url, { encoding: 'json' }, function (err, res) {
@@ -110,6 +113,28 @@ test.serial.cb('updateTarget', function (t) {
     // Remove id from target before comparing
     delete res.body.id
     t.deepEqual(res.body, body, 'values should match')
+    t.end()
+  }
+})
+
+// This can be improved drastically, and should write multiple cases
+test.serial.cb('decision', function (t) {
+  var url = '/route'
+  var options = { encoding: 'json', method: 'POST' }
+  var body = {
+    geoState: 'ca',
+    publisher: 'abc',
+    timestamp: '2018-08-17T14:28:59.513Z'
+  }
+
+  servertest(server(), url, options, onResponse)
+    .end(JSON.stringify(body))
+
+  function onResponse (err, res) {
+    t.falsy(err, 'no error')
+
+    t.is(res.statusCode, 200, 'correct statusCode')
+    t.is(res.body.url, 'http://example-udpated.com', 'values should match')
     t.end()
   }
 })
