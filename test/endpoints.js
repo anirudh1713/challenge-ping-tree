@@ -54,3 +54,22 @@ test.serial.cb('createTarget', function (t) {
     t.end()
   }
 })
+
+test.serial.cb('getTargets', function (t) {
+  var url = '/api/targets'
+  var options = { encoding: 'json' }
+
+  servertest(server(), url, options, onResponse)
+
+  function onResponse (err, res) {
+    t.falsy(err, 'no error')
+
+    t.is(res.statusCode, 200, 'correct statusCode')
+    // Remove id from each target before matching
+    res.body.forEach(function (target) {
+      delete target.id
+    })
+    t.deepEqual(res.body, [TARGET], 'values should match')
+    t.end()
+  }
+})
