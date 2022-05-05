@@ -94,3 +94,22 @@ test.serial.cb('getTargetById', function (t) {
     t.end()
   }
 })
+
+test.serial.cb('updateTarget', function (t) {
+  var url = `/api/target/${TARGET_ID}`
+  var options = { encoding: 'json', method: 'POST' }
+  var body = { ...TARGET, url: 'http://example-udpated.com', maxAcceptsPerDay: '55' }
+
+  servertest(server(), url, options, onResponse)
+    .end(JSON.stringify(body))
+
+  function onResponse (err, res) {
+    t.falsy(err, 'no error')
+
+    t.is(res.statusCode, 200, 'correct statusCode')
+    // Remove id from target before comparing
+    delete res.body.id
+    t.deepEqual(res.body, body, 'values should match')
+    t.end()
+  }
+})
