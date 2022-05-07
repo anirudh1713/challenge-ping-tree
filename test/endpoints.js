@@ -1,4 +1,10 @@
 process.env.NODE_ENV = 'test'
+
+var test = require('ava')
+var servertest = require('servertest')
+
+var server = require('../lib/server')
+
 var TARGET_ID
 var TARGET = {
   url: 'http://example.com',
@@ -20,11 +26,6 @@ var TARGET = {
     }
   }
 }
-
-var test = require('ava')
-var servertest = require('servertest')
-
-var server = require('../lib/server')
 
 // * We can make some utility functions that adds/removes data from cache on demand (that'd be better)
 // * all these test cases can be improved drastically
